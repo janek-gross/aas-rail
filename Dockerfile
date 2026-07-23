@@ -31,10 +31,12 @@ WORKDIR /home/aas-rail
 RUN python -m venv .venv
 ENV PATH="/home/aas-rail/.venv/bin:$PATH"
 
-# Install Python dependencies
-COPY --chown=aas-rail:aas-rail requirements.txt .
+# Install aas-rail and the development extras from pyproject.toml
+WORKDIR /home/aas-rail/aas-rail
+COPY --chown=aas-rail:aas-rail pyproject.toml README.md LICENSE ./
+COPY --chown=aas-rail:aas-rail src ./src
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir --editable ".[app,dev,perturbation]"
 
 # Git safety configuration
 RUN git config --global --add safe.directory /home/aas-rail/aas-rail

@@ -11,5 +11,5 @@
     "settings": {
       "python.defaultInterpreterPath": "/home/aas-rail/.venv/bin/python"
     },
-  "postStartCommand": "pip install -e /home/aas-rail/aas-rail"
+  "postStartCommand": "pip install -e '.[app,dev,perturbation]'"
 }
