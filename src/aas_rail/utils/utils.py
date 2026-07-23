@@ -1,5 +1,5 @@
-from schema_based_ie.schemata.ie_schemata.aas_ie import AAS_SCHEMA_REGISTRY
-from schema_based_ie.schemata.rag_schemata.rag_retrieve_schema import (
+from aas_rail.schemata.ie_schemata.aas_ie import AAS_SCHEMA_REGISTRY
+from aas_rail.schemata.rag_schemata.rag_retrieve_schema import (
     RETRIEVE_SCHEMA_REGISTRY,
 )
 

@@ -9,7 +9,7 @@ from basyx.aas import model
 from basyx.aas.model.provider import DictObjectStore
 from rdflib import Graph, URIRef
 
-from schema_based_ie.langgraphs.icl.aasx_io import (
+from aas_rail.langgraphs.icl.aasx_io import (
     extract_product_metadata,
     extract_technical_data_properties,
     filter_property_records_to_technical_data,
@@ -17,14 +17,14 @@ from schema_based_ie.langgraphs.icl.aasx_io import (
     is_technical_data_property_record,
     is_technical_properties_property_record,
 )
-from schema_based_ie.langgraphs.icl.extraction_helper_models import (
+from aas_rail.langgraphs.icl.extraction_helper_models import (
     ExtractionHelper,
     PropertyRecord,
     PropertyRecordMember,
     RdfPropertyRecord,
     unique_non_empty,
 )
-from schema_based_ie.langgraphs.icl.extraction_helper_pipeline import (
+from aas_rail.langgraphs.icl.extraction_helper_pipeline import (
     ExtractionHelperCfg,
     State,
     _fallback_helper_for_group,
@@ -33,14 +33,14 @@ from schema_based_ie.langgraphs.icl.extraction_helper_pipeline import (
     has_more_batches,
     select_batch,
 )
-from schema_based_ie.langgraphs.icl.icl_database_creation import (
+from aas_rail.langgraphs.icl.icl_database_creation import (
     _extraction_helper_payloads_from_turtle,
     _prepare_fetch_file_uri,
     _tag_imported_resources,
     _upsert_extraction_helpers,
     TurtleExport,
 )
-from schema_based_ie.langgraphs.icl.icl_database_creation import (
+from aas_rail.langgraphs.icl.icl_database_creation import (
     DatasheetEmbeddingCfg,
     DatasheetEmbeddingClientCfg,
     build_cached_icl_turtle_export_from_sample_dir,
@@ -49,22 +49,22 @@ from schema_based_ie.langgraphs.icl.icl_database_creation import (
     discover_icl_example_sample_dirs,
     extraction_helper_generation_hash,
 )
-from schema_based_ie.langgraphs.icl.rdf_export import safe_uri_ref
-from schema_based_ie.langgraphs.icl.rdf_extraction_helper import (
+from aas_rail.langgraphs.icl.rdf_export import safe_uri_ref
+from aas_rail.langgraphs.icl.rdf_extraction_helper import (
     _add_instruction_node,
     _add_unique_literals,
     add_datasheet_embedding_to_turtle,
     add_helper_artifact_ids_to_turtle,
     add_property_record_ids_to_turtle,
 )
-from schema_based_ie.langgraphs.icl.rdf_property_grouping import group_property_records
-from schema_based_ie.langgraphs.icl.rdf_serialization import NS_AAS
-from schema_based_ie.langgraphs.icl import icl_database_creation, rdf_queries
-from schema_based_ie.langgraphs.icl.rdf_queries import (
+from aas_rail.langgraphs.icl.rdf_property_grouping import group_property_records
+from aas_rail.langgraphs.icl.rdf_serialization import NS_AAS
+from aas_rail.langgraphs.icl import icl_database_creation, rdf_queries
+from aas_rail.langgraphs.icl.rdf_queries import (
     PROPERTY_VALUES_WITH_METADATA_CYPHER,
     normalize_property_definition_params,
 )
-from schema_based_ie.model_clients.client_configs import OpenAIClientCfg
+from aas_rail.model_clients.client_configs import OpenAIClientCfg
 
 
 def test_unique_non_empty_removes_empty_and_duplicate_values():
@@ -131,7 +131,7 @@ def test_property_value_query_passes_technical_properties_filter(monkeypatch):
 
     monkeypatch.setitem(sys.modules, "neo4j", types.SimpleNamespace(GraphDatabase=object()))
     monkeypatch.setattr(
-        "schema_based_ie.langgraphs.icl.neo4j_connection.connect_neo4j",
+        "aas_rail.langgraphs.icl.neo4j_connection.connect_neo4j",
         fake_connect_neo4j,
     )
 
@@ -319,7 +319,7 @@ def test_extract_product_metadata_returns_eclass_and_manufacturer():
 
 
 def test_create_datasheet_embedding_averages_chunk_embeddings(monkeypatch):
-    from schema_based_ie.model_clients import llm_clients
+    from aas_rail.model_clients import llm_clients
 
     class FakeEmbeddingClient:
         def embed(self, texts, parameters):
@@ -369,7 +369,7 @@ def test_default_datasheet_embedding_model_uses_local_llama_model():
 
 
 def test_convert_paired_files_does_not_write_turtle_when_requested_embedding_fails(monkeypatch):
-    from schema_based_ie.langgraphs.icl import icl_database_creation
+    from aas_rail.langgraphs.icl import icl_database_creation
 
     monkeypatch.setattr(icl_database_creation, "load_aasx_object_store", lambda file_bytes: object())
     monkeypatch.setattr(
@@ -1168,8 +1168,8 @@ def test_prepare_fetch_file_uri_writes_turtle_and_returns_file_uri(tmp_path: Pat
 
 
 def test_safe_uri_ref_encodes_extra_hash_characters_in_fragments():
-    uri = safe_uri_ref("file:///home/schema-ie/schema_based_ie/0173-1#02-AAQ325#003")
-    assert str(uri) == "file:///home/schema-ie/schema_based_ie/0173-1#02-AAQ325%23003"
+    uri = safe_uri_ref("file:///home/aas-rail/aas_rail/0173-1#02-AAQ325#003")
+    assert str(uri) == "file:///home/aas-rail/aas_rail/0173-1#02-AAQ325%23003"
 
     uri2 = safe_uri_ref("https://example.com/path#frag#other")
     assert str(uri2) == "https://example.com/path#frag%23other"
@@ -1266,7 +1266,7 @@ def test_fallback_helper_uses_current_response_model_fields():
 
 
 def test_extraction_helper_pipeline_writes_graph_invoke_result(tmp_path: Path, monkeypatch):
-    from schema_based_ie.langgraphs.icl import extraction_helper_pipeline
+    from aas_rail.langgraphs.icl import extraction_helper_pipeline
 
     group = PropertyRecord(
         group_key="group",

@@ -57,7 +57,7 @@ def load_registry(path: str | Path) -> dict[str, dict[str, str]]:
 PROMPT_REGISTRY = {}
 
 
-from schema_based_ie import prompts
+from aas_rail import prompts
 
 # TODO: Load dataset-specific prompt registries
 
@@ -65,7 +65,7 @@ from schema_based_ie import prompts
 for _, prompt_file, _ in pkgutil.iter_modules(prompts.__path__):
     if prompt_file == "prompt_registry":
         continue
-    module = importlib.import_module(f"schema_based_ie.prompts.{prompt_file}")
+    module = importlib.import_module(f"aas_rail.prompts.{prompt_file}")
     # load jsonl files in the module path
     for p in module.__path__:
         p = Path(p)

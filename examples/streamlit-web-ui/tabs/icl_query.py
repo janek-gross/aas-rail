@@ -10,12 +10,12 @@ from typing import Any
 
 import streamlit as st
 
-from schema_based_ie.langgraphs.icl.icl_database_creation import (
+from aas_rail.langgraphs.icl.icl_database_creation import (
     DEFAULT_NEO4J_PASSWORD,
     DEFAULT_NEO4J_URI,
     DEFAULT_NEO4J_USER,
 )
-from schema_based_ie.langgraphs.icl.rdf_queries import (
+from aas_rail.langgraphs.icl.rdf_queries import (
     normalize_property_definition_params,
     query_product_metadata,
     query_property_values_with_metadata,

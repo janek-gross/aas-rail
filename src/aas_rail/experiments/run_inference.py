@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 import os
 import subprocess
 from datetime import datetime
@@ -8,15 +9,15 @@ from pathlib import Path
 import yaml
 from pydantic import BaseModel
 
-from schema_based_ie.experiments.expand_matrix_cfg import generate_configs
-from schema_based_ie.langgraphs.generic_pipeline import run
+from aas_rail.experiments.expand_matrix_cfg import generate_configs
+from aas_rail.langgraphs.generic_pipeline import run
+
+logger = logging.getLogger(__name__)
 
 CFG_DIR = "/home/aas-rail/data/inference_results/cfgs/"
 RESULTS_DIR = "/home/aas-rail/data/inference_results"
 
 IE_REGISTRY = {
-    # "schema_ie": run_schema_ie,
-    # "schema_ie_rag": run_schema_ie_rag,
     "generic_pipeline": run
 }
 
@@ -86,7 +87,7 @@ def run_experiment_cfg(input_path: str | Path, cfg_path: str | Path, override = 
         with open(output_path, "w") as f:
             json.dump(serializable_result, f, indent=4)
     else:
-        print("Inference result already exists. Skipping.")
+        logger.info("Inference result already exists; skipping %s", input_path)
 
 def run_experiment(dataset_path, matrix_cfg_path, override = False):
     cfg_paths = generate_configs(matrix_cfg_path, Path(CFG_DIR) / Path(matrix_cfg_path).stem)
@@ -105,6 +106,10 @@ def parse_args():
     return parser.parse_args()
 
 def main():
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    )
     args = parse_args()
     cfg = load_config(args.cfg)
     result = run_inference(args.input, cfg)
@@ -118,7 +123,7 @@ def main():
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8") as f:
         json.dump(make_json_safe(result), f, indent=4)
-    print(f"Wrote inference result to {output_path}")
+    logger.info("Wrote inference result to %s", output_path)
 
 if __name__ == "__main__":
     main()

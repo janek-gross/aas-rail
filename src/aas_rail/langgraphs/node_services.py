@@ -3,7 +3,7 @@
 from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
-from schema_based_ie.model_clients.llm_clients import EmbeddingClient
+from aas_rail.model_clients.llm_clients import EmbeddingClient
 import chromadb
 
 

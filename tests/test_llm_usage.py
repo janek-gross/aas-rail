@@ -2,7 +2,7 @@ from types import SimpleNamespace
 
 from pydantic import BaseModel, ConfigDict
 
-from schema_based_ie.model_clients.llm_clients import (
+from aas_rail.model_clients.llm_clients import (
     AnthropicClient,
     GoogleClient,
     _anthropic_generation_usage,

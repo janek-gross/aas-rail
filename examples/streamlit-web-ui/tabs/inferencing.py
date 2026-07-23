@@ -10,8 +10,8 @@ from typing import Any, Dict, Optional
 
 import streamlit as st
 
-from schema_based_ie.experiments.run_inference import run_inference
-from schema_based_ie.langgraphs.generic_pipeline import Cfg, ICLCfg
+from aas_rail.experiments.run_inference import run_inference
+from aas_rail.langgraphs.generic_pipeline import Cfg, ICLCfg
 
 from utils import (
     build_display_rows,

@@ -7,13 +7,13 @@ from typing import Any
 
 import streamlit as st
 
-from schema_based_ie.langgraphs.icl.aasx_io import (
+from aas_rail.langgraphs.icl.aasx_io import (
     collect_property_records_from_aasx_bytes,
     filter_property_records_to_technical_data,
     filter_property_records_to_technical_properties,
 )
-from schema_based_ie.langgraphs.icl.rdf_property_grouping import group_property_records
-from schema_based_ie.langgraphs.icl.icl_database_creation import (
+from aas_rail.langgraphs.icl.rdf_property_grouping import group_property_records
+from aas_rail.langgraphs.icl.icl_database_creation import (
     DEFAULT_NEO4J_IMPORT_DIR,
     DEFAULT_NEO4J_PASSWORD,
     DEFAULT_NEO4J_URI,
@@ -24,8 +24,8 @@ from schema_based_ie.langgraphs.icl.icl_database_creation import (
     reset_neo4j_database,
     write_turtle_exports,
 )
-from schema_based_ie.model_clients.client_configs import EmbeddingCfg
-from schema_based_ie.langgraphs.icl.extraction_helper_pipeline import (
+from aas_rail.model_clients.client_configs import EmbeddingCfg
+from aas_rail.langgraphs.icl.extraction_helper_pipeline import (
     ExtractionHelperCfg,
     ExtractionHelperClientCfg,
 )

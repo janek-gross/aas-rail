@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Optional, Sequence
@@ -15,7 +16,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pydantic import BaseModel, Field, TypeAdapter
 from rdflib import Graph, RDF, URIRef
 
-from schema_based_ie.model_clients.client_configs import (
+from aas_rail.model_clients.client_configs import (
     DatasheetEmbeddingCfg,
     DatasheetEmbeddingClientCfg,
     EmbeddingCfg,
@@ -55,6 +56,8 @@ from .rdf_export import object_store_to_turtle
 
 
 _connect_neo4j = connect_neo4j
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_ICL_EXAMPLES_DIR = Path("/home/aas-rail/data/datasets/icl_examples")
 ICL_CACHE_DIR_NAME = "icl_cache"
@@ -332,7 +335,7 @@ def convert_paired_aasx_pdf_files_to_turtle(
     embedding_config_hash = datasheet_embedding_config_hash(embedding_cfg) if generate_datasheet_embeddings else None
 
     for source_name, file_bytes in aasx_files:
-        print(f"Processing AASX file: {source_name}")
+        logger.info("Processing AASX file: %s", source_name)
         ttl_name = f"{Path(source_name).stem}.ttl"
         pdf_payload = pdfs_by_stem.get(Path(source_name).stem)
         if (generate_instructions or generate_datasheet_embeddings) and pdf_payload is None:
@@ -824,7 +827,7 @@ def create_datasheet_embedding(
     cfg: EmbeddingCfg | Mapping[str, Any] | None = None,
 ) -> DatasheetEmbeddingResult:
     """Create an averaged embedding for a product datasheet text."""
-    from schema_based_ie.model_clients.llm_clients import CACHED_EMBEDDING_CLIENT_REGISTRY
+    from aas_rail.model_clients.llm_clients import CACHED_EMBEDDING_CLIENT_REGISTRY
 
     embedding_cfg = (
         cfg

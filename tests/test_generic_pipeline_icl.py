@@ -2,9 +2,9 @@ import json
 import sys
 import types
 
-from schema_based_ie.langgraphs import generic_pipeline as gp
-from schema_based_ie.langgraphs.icl import icl_database_creation, rdf_queries
-from schema_based_ie.model_clients.client_configs import DatasheetEmbeddingCfg
+from aas_rail.langgraphs import generic_pipeline as gp
+from aas_rail.langgraphs.icl import icl_database_creation, rdf_queries
+from aas_rail.model_clients.client_configs import DatasheetEmbeddingCfg
 
 
 def test_ranked_icl_examples_prefers_layered_metadata_and_formats_instructions():
@@ -293,7 +293,7 @@ def test_query_datasheet_embeddings_passes_config_hash_and_sources(monkeypatch):
 
     monkeypatch.setitem(sys.modules, "neo4j", types.SimpleNamespace(GraphDatabase=object()))
     monkeypatch.setattr(
-        "schema_based_ie.langgraphs.icl.neo4j_connection.connect_neo4j",
+        "aas_rail.langgraphs.icl.neo4j_connection.connect_neo4j",
         fake_connect_neo4j,
     )
 

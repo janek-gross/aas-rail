@@ -122,10 +122,10 @@ class CachedEmbeddingClient(EmbeddingClient):
     def __init__(
         self,
         client: EmbeddingClient,
-        cache: SqliteEmbeddingCache = SqliteEmbeddingCache(),
+        cache: SqliteEmbeddingCache | None = None,
     ):
         self.client = client
-        self.cache = cache
+        self.cache = cache or SqliteEmbeddingCache()
 
     @property
     def provider(self) -> str:
@@ -671,9 +671,14 @@ EMBEDDING_CLIENT_REGISTRY = {
 }
 
 def cached(client_factory):
-    cache = SqliteEmbeddingCache(SQLITE_DB_PATH)
+    cache = None
+
     def wrapper():
+        nonlocal cache
+        if cache is None:
+            cache = SqliteEmbeddingCache(SQLITE_DB_PATH)
         return CachedEmbeddingClient(client_factory(), cache)
+
     return wrapper
 
 CACHED_EMBEDDING_CLIENT_REGISTRY = {

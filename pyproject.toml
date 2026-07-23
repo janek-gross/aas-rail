@@ -41,6 +41,7 @@ perturbation = [
     "spacy>=3.8,<4",
 ]
 dev = [
+    "build>=1,<2",
     "ipykernel>=7,<8",
     "pytest>=8,<10",
     "ruff>=0.12,<1",
@@ -52,9 +53,9 @@ Issues = "https://github.com/janek-gross/aas-rail/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["schema_based_ie*"]
+include = ["aas_rail*"]
 namespaces = false
 
 [tool.setuptools.package-data]
-"schema_based_ie.prompts" = ["rag_ie/*.jsonl"]
-"schema_based_ie.experiments" = ["*.yaml", "configs/*.yaml", "configs/*/*.yaml"]
+"aas_rail.prompts" = ["rag_ie/*.jsonl"]
+"aas_rail.experiments" = ["*.yaml", "configs/*.yaml", "configs/*/*.yaml"]

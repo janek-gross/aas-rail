@@ -4,10 +4,13 @@ from copy import deepcopy
 from typing import Any
 import hashlib
 import json
-from schema_based_ie.langgraphs.generic_pipeline import Cfg
+import logging
+from aas_rail.langgraphs.generic_pipeline import Cfg
 from pydantic import TypeAdapter
 import os
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 def expand_cfg(node: Any) -> list[Any]:
     """
@@ -106,7 +109,7 @@ def generate_configs(input_path: str, output_dir: str = None):
 
     expanded = expand_root(sweep_cfg)
 
-    print(f"Generated {len(expanded)} configs")
+    logger.info("Generated %s configurations", len(expanded))
     file_paths = []
     if output_dir is None:
         # Print as JSON (for debugging)
@@ -121,6 +124,10 @@ def cli():
     Command-line interface entrypoint
     """
     import argparse
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    )
     parser = argparse.ArgumentParser(description="Expand YAML sweep config")
     parser.add_argument("input", help="Input YAML sweep file")
     parser.add_argument("--output_dir", default=None,

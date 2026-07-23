@@ -5,38 +5,41 @@ from pypdfium2 import PdfDocument
 import json
 import chromadb
 import hashlib
+import logging
 import math
 import re
-from schema_based_ie.langgraphs.node_services import VectorStore
+from aas_rail.langgraphs.node_services import VectorStore
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from schema_based_ie.model_clients.llm_clients import EmbeddingClient, GenerationClient
-from schema_based_ie.prompts.prompt_registry import load_registry
+from aas_rail.model_clients.llm_clients import EmbeddingClient, GenerationClient
+from aas_rail.prompts.prompt_registry import load_registry
 from typing import Literal
-from schema_based_ie.schemata.rag_schemata.rag_retrieve_schema import RETRIEVE_SCHEMA_REGISTRY
-from schema_based_ie.schemata.ie_schemata.aas_ie import AAS_SCHEMA_REGISTRY
-from schema_based_ie.model_clients.llm_clients import GENERATION_CLIENT_REGISTRY, CACHED_EMBEDDING_CLIENT_REGISTRY#
-from schema_based_ie.model_clients.client_configs import (
+from aas_rail.schemata.rag_schemata.rag_retrieve_schema import RETRIEVE_SCHEMA_REGISTRY
+from aas_rail.schemata.ie_schemata.aas_ie import AAS_SCHEMA_REGISTRY
+from aas_rail.model_clients.llm_clients import GENERATION_CLIENT_REGISTRY, CACHED_EMBEDDING_CLIENT_REGISTRY#
+from aas_rail.model_clients.client_configs import (
     ClientCfg,
     EmbeddingCfg,
     LlamaClientCfg,
 )
-from schema_based_ie.langgraphs.icl.aasx_io import (
+from aas_rail.langgraphs.icl.aasx_io import (
     extract_product_metadata,
     extract_technical_data_properties,
     load_aasx_object_store,
 )
-from schema_based_ie.langgraphs.icl.neo4j_connection import (
+from aas_rail.langgraphs.icl.neo4j_connection import (
     DEFAULT_NEO4J_PASSWORD,
     DEFAULT_NEO4J_URI,
     DEFAULT_NEO4J_USER,
 )
-from schema_based_ie.langgraphs.icl.rdf_queries import (
+from aas_rail.langgraphs.icl.rdf_queries import (
     normalize_property_definition_params,
     query_datasheet_embeddings,
     query_property_values_with_metadata,
 )
 from langgraph.graph import StateGraph, START, END
 from dataclasses import dataclass
+
+logger = logging.getLogger(__name__)
 
 CHROMADB_PATH = "/home/aas-rail/data/chromadb/"
 
@@ -179,7 +182,7 @@ class DefinitionSchemaBasedExtractor:
         self.prompt_degradation_intensity = self.cfg.prompt_degradation_intensity
         if self.prompt_degradation_intensity > 0.0:
             # conditional import due to performance reasons
-            from schema_based_ie.langgraphs.text_perturbation import degrade_text
+            from aas_rail.langgraphs.text_perturbation import degrade_text
             self.degrade_text = degrade_text
 
     def extract(self, context):
@@ -188,7 +191,7 @@ class DefinitionSchemaBasedExtractor:
             context['prompt_instance'] = self.degrade_text(context['prompt_instance'], intensity=self.prompt_degradation_intensity)
 
         parameters = {'model': self.model, 'temperature': self.temperature, 'timeout': self.timeout, 'retry': self.retry, 'enable_thinking': self.enable_thinking}
-        print("schema_extracor",self.model)
+        logger.info("Running schema extraction with model %s", self.model)
         result = self.client.generate(
             parameters=parameters,
             response_schema=context['schema_instance'],
@@ -210,17 +213,25 @@ class Services:
 
 def merge_identical(a: Any, b: Any) -> Any:
     if a != b:
-        print(a, type(a))
-        print(b, type(b))
-        print()
+        logger.debug(
+            "Conflicting fan-in values: left=%r (%s), right=%r (%s)",
+            a,
+            type(a).__name__,
+            b,
+            type(b).__name__,
+        )
         raise ValueError(f"Conflicting objects detected during fan-in:\n{a}\n{b}")
     return a  # they are identical, safe to use
 
 def merge_single(a: Any, b: Any) -> Any:
     if a is not None and b is not None:
-        print(a, type(a))
-        print(b, type(b))
-        print()
+        logger.debug(
+            "Unexpected duplicate fan-in values: left=%r (%s), right=%r (%s)",
+            a,
+            type(a).__name__,
+            b,
+            type(b).__name__,
+        )
         raise ValueError(f"Unexpected objects detected during a fan-in:\n{a}\n{b}")
     return a if a is not None else b
 
@@ -413,9 +424,9 @@ def format_icl_example(
     values = clean_icl_values(row.get("values"))
     instructions = clean_icl_instructions(row.get("extractionInstructions") or [])
     example = {
-        # "source": row.get("sourceName") or "",
+        "source": row.get("sourceName") or "",
         "property": row.get("propertyIdShort") or row.get("semanticId") or "",
-        # "values": values[:5],
+        "values": values[:5],
         "unit": first_instruction_value(instructions, "unit"),
         # "path": row.get("elementPath") or [],
         # "submodel": row.get("submodelIdShort") or "",
@@ -804,7 +815,11 @@ def select_query_batch(state: State) -> State:
     else:
         state.query_batch_start = 0
         state.query_batch_end = len(state.definitions)
-    print(f"query_batch {state.query_batch_index}", len(state.definitions))
+    logger.debug(
+        "Selected query batch %s from %s definitions",
+        state.query_batch_index,
+        len(state.definitions),
+    )
     return state
 
 def assemble_query_context(state: State) -> State:
@@ -904,7 +919,7 @@ def select_extraction_batch(state: State) -> State:
     else:
         state.extraction_batch_start = 0
         state.extraction_batch_end = len(state.definitions)
-    print(f"extraction_batch {state.extraction_batch_index}")
+    logger.debug("Selected extraction batch %s", state.extraction_batch_index)
     return state
 
 def assemble_ie_context(state: State) -> State:
@@ -1132,7 +1147,7 @@ def run(input_path: str, cfg: dict | None = None) -> dict:
     if cfg is not None:
         cfg = TypeAdapter(Cfg).validate_python(cfg)
     else:
-        print("Config is None. Running default Config.")
+        logger.info("No configuration supplied; using the default configuration")
         cfg = Cfg()
 
     services = build_services(cfg)

@@ -1,5 +1,6 @@
 import io
 import json
+import logging
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -7,7 +8,7 @@ from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field, TypeAdapter
 from pypdfium2 import PdfDocument
 
-from schema_based_ie.model_clients.client_configs import ClientCfg, ExtractionHelperClientCfg
+from aas_rail.model_clients.client_configs import ClientCfg, ExtractionHelperClientCfg
 
 from .extraction_helper_models import (
     ExtractionHelper,
@@ -20,6 +21,8 @@ from .extraction_helper_models import (
 
 
 ExtractionHelperGenerationClientCfg = ClientCfg | ExtractionHelperClientCfg
+
+logger = logging.getLogger(__name__)
 
 
 DEFAULT_EXTRACTION_HELPER_INSTRUCTION = """
@@ -145,7 +148,7 @@ class State(BaseModel):
 
 class ExtractionHelperGenerator:
     def __init__(self, cfg: ExtractionHelperCfg):
-        from schema_based_ie.model_clients.llm_clients import GENERATION_CLIENT_REGISTRY
+        from aas_rail.model_clients.llm_clients import GENERATION_CLIENT_REGISTRY
 
         self.cfg = cfg
         self.client: Any = GENERATION_CLIENT_REGISTRY[cfg.client_cfg.client_name]()
@@ -260,7 +263,7 @@ def _write_debug_state(debug_output_path: str | None, payload: Mapping[str, Any]
             encoding="utf-8",
         )
     except Exception as exc:
-        print(f"Warning: failed to write extraction-instruction debug state: {exc}")
+        logger.warning("Failed to write extraction-instruction debug state: %s", exc)
 
 
 def _make_json_safe(value: Any) -> Any:
@@ -405,7 +408,7 @@ def run_extraction_helper_pipeline(
         "property_groups": groups,
     }
     try:
-        print("Running extraction-helper generation pipeline...")
+        logger.info("Running extraction-helper generation pipeline")
         result = graph.invoke(graph_input)
         _write_debug_state(cfg_model.debug_output_path, result)
     except Exception as exc:

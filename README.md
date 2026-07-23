@@ -1,5 +1,7 @@
 # aas-rail
 
+[![CI](https://github.com/janek-gross/aas-rail/actions/workflows/ci.yml/badge.svg)](https://github.com/janek-gross/aas-rail/actions/workflows/ci.yml)
+
 **Asset Administration Shell Retrieval-Augmented In-context Learning for
 Information Extraction**
 
@@ -10,7 +12,7 @@ extraction, retrieval-augmented generation, and graph-backed in-context learning
 configuration tooling.
 
 The package is self-contained: its AAS and retrieval response schemas ship in
-`src/schema_based_ie/schemata`, and no evaluation framework or sibling
+`src/aas_rail/schemata`, and no evaluation framework or sibling
 repository is required.
 
 ## Prerequisites
@@ -95,9 +97,9 @@ definitions in the format expected by the generic pipeline. From inside the
 container, run one YAML configuration with:
 
 ```bash
-python -m schema_based_ie.experiments.run_inference \
+python -m aas_rail.experiments.run_inference \
   --input /home/aas-rail/data/datasets/aasx_sample/Wago_249-197 \
-  --cfg src/schema_based_ie/experiments/default_config.yaml \
+  --cfg src/aas_rail/experiments/default_config.yaml \
   --output /home/aas-rail/data/inference_results/Wago_249-197.json
 ```
 
@@ -105,15 +107,15 @@ The `--output` argument is optional; without it, results are timestamped under
 `/home/aas-rail/data/inference_results`. The bundled default configuration runs
 plain schema-guided extraction. To enable ICL in an experiment config, replace
 `icl_cfg: null` with an `icl_cfg` mapping; see
-`src/schema_based_ie/experiments/configs/architecture_optimization/icl.yaml` for
+`src/aas_rail/experiments/configs/architecture_optimization/icl.yaml` for
 an example. Provider names, model names, batching, retrieval, and ICL settings
 are all controlled by the YAML file.
 
 Sweep configurations can be expanded into validated individual configs with:
 
 ```bash
-python -m schema_based_ie.experiments.expand_matrix_cfg \
-  src/schema_based_ie/experiments/configs/architecture_optimization/batch_size.yaml \
+python -m aas_rail.experiments.expand_matrix_cfg \
+  src/aas_rail/experiments/configs/architecture_optimization/batch_size.yaml \
   --output_dir /home/aas-rail/data/inference_results/cfgs
 ```
 
