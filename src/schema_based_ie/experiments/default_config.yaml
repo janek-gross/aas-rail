@@ -1,0 +1,20 @@
+id_cfg:
+  graph: generic_pipeline
+  experiment_series_id: tests
+  tool_development_stage: alpha
+icl_cfg: null
+query_generator_cfg: null
+schema_based_extractor_cfg:
+  client_cfg:
+    client_name: llama
+    model: ggml-org/gpt-oss-20b-GGUF:MXFP4
+  prompt:
+    type: manual
+    id: v0
+  temperature: null
+  prompt_degradation_intensity: 0.0
+  response_schema: aas_factory
+  batch_size: 16
+  timeout: 180.0
+  retry: 1
+  enable_thinking: null

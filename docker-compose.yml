@@ -1,0 +1,40 @@
+networks:
+  eval-net:
+    driver: bridge
+
+
+services:
+  aas-rail:
+    build:
+      context: .
+      args:
+        GIT_USER_NAME: ${GIT_USER_NAME}
+        GIT_USER_EMAIL: ${GIT_USER_EMAIL}
+    container_name: aas-rail
+    volumes:
+      - ${DATA_PATH}:/home/aas-rail/data
+      - ./:/home/aas-rail/aas-rail
+      - ${FRAMEWORK_PATH}:/home/aas-rail/vamos_evaluation_framework
+    networks:
+      - eval-net
+    env_file:
+      - .env
+    depends_on:
+      - neo4j
+
+  neo4j:
+    image: neo4j:latest
+    container_name: neo4j
+    networks:
+      - eval-net
+    ports:
+      - "7474:7474"   # browser UI from host
+      - "7687:7687"   # bolt from host, optional
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD}
+      NEO4J_dbms_security_procedures_unrestricted: n10s.*
+    volumes:
+      - ${NEO4J_PATH}/data:/data
+      - ${NEO4J_PATH}/logs:/logs
+      - ${NEO4J_PATH}/import:/var/lib/neo4j/import
+      - ${NEO4J_PATH}/plugins:/plugins

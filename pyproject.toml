@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aas-rail"
+version = "0.0.0"
+description = "Asset Administration Shell Retrieval-Augmented In-context Learning for Information Extraction"
+authors = [
+    { name="Janek Groß", email="janek.gross@hs-mainz.de" }
+]
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text="MIT" }
+
+# Optional dependencies for testing
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["schema_based_ie"]

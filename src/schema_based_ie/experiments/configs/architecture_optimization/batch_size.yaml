@@ -1,0 +1,15 @@
+- schema_based_extractor_cfg:
+    client_cfg:
+      model: [gpt-oss:20b,gpt-oss:120b,gpt-4o-mini,qwen3:8b,qwen3:32b]
+    batch_size: [1,2,4,8,16]
+  query_generator_cfg:
+    null
+- schema_based_extractor_cfg:
+    batch_size: [1,2,4,8,16]
+  query_generator_cfg:
+    client_cfg:
+      model:
+        gpt-oss:20b
+- query_generator_cfg:
+    batch_size: [1,2,4,8,16]
+    

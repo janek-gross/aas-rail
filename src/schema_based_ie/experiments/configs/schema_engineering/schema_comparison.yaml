@@ -1,0 +1,4 @@
+schema_based_extractor_cfg:
+  client_cfg:
+    model: [gpt-oss:20b,gpt-oss:120b,gpt-4o-mini,qwen3:32b,deepseek-r1:70b,gemini-2.5-flash-lite]
+  response_schema: [aas_elastic,aas_factory,aas_partially_completed_factory]

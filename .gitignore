@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.env
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.venv/
+
+# Local application caches and experiment output.
+examples/streamlit-web-ui/.aas_rail_cache/
+examples/streamlit-web-ui/.schema_ie_cache/
+data/
+*.ttl

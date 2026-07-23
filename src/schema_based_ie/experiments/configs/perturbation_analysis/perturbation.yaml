@@ -1,0 +1,10 @@
+- schema_based_extractor_cfg:
+    temperature: [1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0]
+- schema_based_extractor_cfg:
+    prompt_degradation_intensity: [0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
+- schema_based_extractor_cfg:
+    client_cfg:
+      model: [qwen3:0.6b,qwen3:1.7b,qwen3:4b,qwen3:8b,qwen3:30b,qwen3:32b,]
+- schema_based_extractor_cfg:
+    client_cfg:
+      model: [deepseek-r1:1.5b,deepseek-r1:7b,deepseek-r1:8b,deepseek-r1:14b,deepseek-r1:32b,deepseek-r1:70b,]

@@ -1,0 +1,30 @@
+icl_cfg: null
+query_generator_cfg:
+  client_cfg:
+    client_name: ollama
+    model: gpt-oss:20b
+  embedding_cfg:
+    client_cfg:
+      client_name: openai
+      model: text-embedding-3-small
+    chunk_size: 200
+    chunk_overlap: 50
+  batch_size: 8
+  n_queries_per_property: 5
+  top_k: 5
+  n_chunks: 10
+  response_schema: retrieve_factory
+  prompt:
+    type: manual
+    id: v0
+schema_based_extractor_cfg:
+  client_cfg:
+    client_name: ollama
+    model: gpt-oss:20b
+  prompt:
+    type: manual
+    id: v0
+  temperature: 0.0
+  prompt_degradation_intensity: 0.0
+  response_schema: aas_factory
+  batch_size: 4

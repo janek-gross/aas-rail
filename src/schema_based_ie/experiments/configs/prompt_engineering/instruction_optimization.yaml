@@ -1,0 +1,6 @@
+schema_based_extractor_cfg:
+  client_cfg:
+    model: [gpt-oss:20b,gpt-oss:120b,gpt-4o-mini,qwen3:32b,deepseek-r1:70b,gemini-2.5-flash-lite]
+  prompt:
+    type: manual
+    id: [v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10]

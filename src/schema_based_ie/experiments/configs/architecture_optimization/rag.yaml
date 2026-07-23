@@ -1,0 +1,13 @@
+- query_generator_cfg: 
+  - null
+  - client_cfg:
+      model: [gpt-oss:20b, gpt-4o-mini, qwen3:32b, deepseek-r1:70b, gemini-2.5-flash-lite]
+  - client_cfg:
+    embedding_cfg:
+      chunk_size: [100,200,400,800]
+      chunk_overlap: [50,100]
+  - client_cfg:
+    n_queries_per_property: [2,4,6]
+  - client_cfg:
+    top_k: [3,6]
+    n_chunks: [2,4,8]
