@@ -1,5 +1,6 @@
-from typing import Union, Type, Literal, Optional
-from pydantic import BaseModel, RootModel, Field, create_model, ConfigDict, model_validator
+from typing import Optional, Type, Union
+
+from pydantic import BaseModel, ConfigDict, Field, create_model, model_validator
 from enum import Enum
 
 
@@ -37,11 +38,11 @@ class TechnicalPropertySchema(BaseModel):
         return {p.name: p.item for p in self.properties}
 
 def schema_factory(
-    property_definitions: list[dict] = [],
+    property_definitions: list[dict] | None = None,
     model_name: str = 'InstanceBasedExtractionSchema'
     ) -> Type[BaseModel]:
     fields = {}
-    for prop in property_definitions:
+    for prop in property_definitions or []:
         fields[prop['id']] = (
             PropertyItem,
             Field(

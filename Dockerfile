@@ -37,9 +37,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt
 
 # Git safety configuration
-ENV PYTHONPATH=/home/aas-rail/vamos_evaluation_framework:$PYTHONPATH
 RUN git config --global --add safe.directory /home/aas-rail/aas-rail
-RUN git config --global --add safe.directory /home/aas-rail/vamos_evaluation_framework
 
 ARG GIT_USER_NAME
 ARG GIT_USER_EMAIL

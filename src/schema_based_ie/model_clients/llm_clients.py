@@ -324,7 +324,6 @@ def load_project_env() -> None:
         Path.cwd() / ".env",
         Path(__file__).resolve().parents[3] / ".env",
     ]
-    print(Path(__file__),Path(__file__).resolve().parents[6],Path(__file__).resolve().parents[3])
     for path in candidates:
         _load_env_file(path)
 

@@ -9,14 +9,16 @@ extraction, retrieval-augmented generation, and graph-backed in-context learning
 (ICL). The repository includes a Streamlit interface and experiment
 configuration tooling.
 
+The package is self-contained: its AAS and retrieval response schemas ship in
+`src/schema_based_ie/schemata`, and no evaluation framework or sibling
+repository is required.
+
 ## Prerequisites
 
 - Docker with Docker Compose
 - Visual Studio Code with the Dev Containers extension (recommended)
 - A model endpoint or API credentials for the provider selected in the config
 - Neo4j with the n10s plugin when using the ICL database and ICL inference
-- A checkout of `vamos_evaluation_framework`; its `datasets` package supplies
-  the schema registry currently used by aas-rail
 
 ## Configure the environment
 
@@ -28,11 +30,24 @@ cd aas-rail
 cp .env.example .env
 ```
 
-Edit `.env` and set the three host paths (`DATA_PATH`, `FRAMEWORK_PATH`, and
-`NEO4J_PATH`) plus the credentials/endpoints required by your selected model
+Edit `.env` and set the host paths (`DATA_PATH` and `NEO4J_PATH`) plus the
+credentials/endpoints required by your selected model
 provider. Paths must be absolute. Windows users can use forward-slash paths such
 as `C:/Users/name/data`; Linux and macOS users should use native absolute paths.
 The `.env` file is ignored by Git.
+
+For a local installation without Docker:
+
+```bash
+python -m venv .venv
+python -m pip install -e ".[app,dev]"
+```
+
+Add the `perturbation` extra if you use prompt-degradation experiments:
+
+```bash
+python -m pip install -e ".[perturbation]"
+```
 
 ## Use the development container
 
@@ -42,10 +57,9 @@ The `.env` file is ignored by Git.
    in editable mode.
 
 The repository is mounted at `/home/aas-rail/aas-rail`, host data at
-`/home/aas-rail/data`, and the evaluation framework at
-`/home/aas-rail/vamos_evaluation_framework`. Docker Compose also defines a
-Neo4j service on ports 7474 and 7687. Stop or rename an existing container that
-uses the name `neo4j` before starting this Compose project.
+`/home/aas-rail/data`. Docker Compose also defines a Neo4j service on ports
+7474 and 7687. Stop or rename an existing container that uses the name `neo4j`
+before starting this Compose project.
 
 To start the services without VS Code:
 

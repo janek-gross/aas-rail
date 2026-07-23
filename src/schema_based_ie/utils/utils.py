@@ -1,7 +1,17 @@
-import sys
-#sys.path.append("/home/template-ie/vamos_evaluation_framework") # can be removed after rebuilding of docker imag
+from schema_based_ie.schemata.ie_schemata.aas_ie import AAS_SCHEMA_REGISTRY
+from schema_based_ie.schemata.rag_schemata.rag_retrieve_schema import (
+    RETRIEVE_SCHEMA_REGISTRY,
+)
 
-from datasets.schema_registry import SCHEMA_REGISTRY
+
+SCHEMA_REGISTRY = {
+    "aas": AAS_SCHEMA_REGISTRY,
+    "retrieval": RETRIEVE_SCHEMA_REGISTRY,
+    "common": {
+        **AAS_SCHEMA_REGISTRY,
+        **RETRIEVE_SCHEMA_REGISTRY,
+    },
+}
 
 def get_model(dataset_name: str, model_name: str):
     """
@@ -18,5 +28,3 @@ def get_model(dataset_name: str, model_name: str):
         return common_registry[model_name]
 
     raise KeyError(f"Model '{model_name}' not found in dataset '{dataset_name}' or common registry.")
-if __name__ == "__main__":
-    print(SCHEMA_REGISTRY)

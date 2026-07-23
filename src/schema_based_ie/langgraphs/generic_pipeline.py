@@ -100,11 +100,13 @@ class Cfg(BaseModel):
     schema_based_extractor_cfg: SchemaBasedExtractorCfg =  Field(default_factory=SchemaBasedExtractorCfg, description="Configuration for the information extraction LLM")
 
 def default_config_to_yaml():
+    """Write the current default configuration to the bundled YAML location."""
     import yaml
     file_path = Path(__file__).resolve().parent.parent / "experiments" / "default_config.yaml"
     with open(file_path, "w") as f:
         yaml.dump(Cfg().model_dump(), f, sort_keys=False)
-default_config_to_yaml()
+
+
 ##########################################
 ############# Node Services ##############
 ##########################################
