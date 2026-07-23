@@ -15,6 +15,16 @@ The package is self-contained: its AAS and retrieval response schemas ship in
 `src/aas_rail/schemata`, and no evaluation framework or sibling
 repository is required.
 
+## Pipeline
+
+The pipeline prepares the input and property definitions, optionally retrieves
+in-context examples, performs batched information extraction, and post-processes
+the resulting AAS property values.
+
+<p align="center">
+  <img src="notebooks/visualizations/rail_pipeline.svg" width="700" alt="aas-rail information extraction pipeline">
+</p>
+
 ## Prerequisites
 
 - Docker with Docker Compose
